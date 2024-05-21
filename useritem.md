@@ -617,19 +617,23 @@ ifconfig
 <img src="./fig/matplotcolor/f7.png"> 
 
 # github本地上传
-1. 在本地需要上传的文件夹建立git仓库并且初始化
-`git init`
-初始化之后，终端会显示git连接命令：`git:main x [19:46:22] C:number`
-2. 提交改变到缓存
-`git commit -m 'description`
-3. 本地git仓库关联到github仓库
-`git remote add origin git@github.com:Lee-zifei/code.git`
-- 如果仓库已经存在链接，但是又是第一次上传，删除链接命令如下：`git remote remove origin`
-4. 创建ssh链接并拷贝到github ssh上
+## 前置条件
+创建ssh链接并拷贝到github ssh上
 生成密钥对：`ssh-keygen`
 查看密钥对：`cat ~/.ssh/id_rsa.pub` 默认位置在/home/lzf/.ssh下
 github授权： <img src="./fig/github_ssh.png">
-5. 添加文件
+## 本地上传流程
+1. 在本地需要上传的文件夹建立git仓库并且初始化
+`git init`
+初始化之后，终端会显示git连接命令：`git:main x [19:46:22] C:number`
+2. 添加文件
 `git add 'files'`
-6. 上传
-`git push -u origin main`
+全部添加
+`git add .`
+3. 提交改变到缓存
+`git commit -m 'what are you doing'`
+4. 本地git仓库关联到github仓库
+`git remote add origin git@github.com:Lee-zifei/zifei.git`
+- 如果仓库已经存在链接，但是又是第一次上传，删除链接命令如下：`git remote remove origin`
+5. 上传
+`git push -u origin main (--force)`
