@@ -30,6 +30,14 @@
 
 </div>
 
+<div align=center STYLE="page-break-after: always;">
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <font size=12 face="黑体">
+        Chapter1:系统软件篇
+    </font>
+</div>
+
 # 安装ubuntu
 - 主分区
 
@@ -41,6 +49,8 @@
 逻辑分区是一种不同于主分区的分区类型，它不存在于硬盘上的分区表中。逻辑分区只能建在一个扩展分区上，而扩展分区则必须是硬盘上4个主分区之一。逻辑分区不需要格式化为文件系统，只需要被分配了一个文件系统类型的ID。逻辑分区可存储文件和数据，就像主分区一样。
 
 - 分区大小设置：
+
+一般来说安装ubuntu，选择手动分区的情况下只需要根据这个来分区就行
 
 | 分区名称  |   分区格式     | 分区类型        | 大小  |说明 |
 | ------- | ------------- | -------------- |--------|--|
@@ -233,6 +243,126 @@ Leader 键定义为了空格，下面是自定义的按键说明
 8. [https://github.com/tpope/vim-surround](https://github.com/tpope/vim-surround)
 9. [https://github.com/justinmk/vim-sneak](https://github.com/justinmk/vim-sneak)
 
+# Conky
+- 什么是Conky
+Conky 是一个能够在桌面上，以文本或图形显示各种数据的软件，类似于一个监控看板。显示的数据可以是系统时间，CPU 或内存的使用情况；也可以是网络传输过来的天气信息。功能可以说相当强大。效果图：
+<img src="./fig/conky.png">
+1. Conky安装
+`sudo apt install conky`
+`sudo mkdir /home/lzf/softwares/conky`
+`sudo nvim /home/lzf/softwares/.conkyrc`
+
+2. 配置Conkyrc文件
+``` bash
+conky.config = {                 
+    alignment = 'top_right',
+    background = false,
+    border_width = 0.1,
+    cpu_avg_samples = 4,
+    default_color = 'white',
+    default_outline_color = 'gray',
+    default_shade_color = 'black',
+    draw_borders = true,
+    draw_graph_borders = false,
+    draw_outline = false,
+    draw_shades = yes,
+    use_xft = true,
+    font = 'DejaVu Sans Mono:size=11',
+    gap_x = 10,                                 #窗口位置
+    gap_y = 40,
+    minimum_height = 5,
+    minimum_width = 5,
+    net_avg_samples = 2,
+    double_buffer = true,
+    out_to_console = false,
+    out_to_stderr = false,
+    extra_newline = false,
+    own_window = true,
+    own_window_colour = '000000',
+    own_window_class = 'Conky',
+    own_window_argb_visual = true,
+    own_window_type = 'dock',
+    own_window_transparent = true,
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+    stippled_borders = 0,
+    update_interval = 1,
+    uppercase = false,
+    use_spacer = 'none',
+    show_graph_scale = false,
+    show_graph_range = false
+}
+conky.text = [[
+#${image ~/.face -p 180,5 -s 70x70 -f 86400}${image ~/.pacman -p 20,9 -s 60x60 -f 86400}
+${font Latin Modern Mono Caps:bold:size=14}${alignc}${color 00ffae}Kuromi's Workbench
+${font Entopia:bold:size=8.5}${alignc}${desktop_name}:${desktop}/$desktop_number
+${font Entopia:bold:size=8.5}${alignc}   ${exec hostnamectl | grep System | cut -c19-40}
+${font Entopia:bold:size=8.5}${alignc}   ${exec hostnamectl | grep Architecture | cut -c5-30}
+${font Entopia:bold:size=8.5}${alignc}   ${exec hostnamectl | grep Kernel | cut -c11-47}
+${font Entopia:bold:size=8.5}${alignc}   毕业时间：2027.06.31
+${font Entopia:bold:size=8.5}${alignc}   “作为一个革命者，你只有认真工作的义务，没有追求个人荣誉的权利”
+${font Entopia:bold:size=12}${color 33E9FF}i5-12400 ${hr 2}${font}
+${offset 15}${color FFFDE2}System Uptime ${alignr}$color $uptime
+${offset 15}${color FFFDE2}Frequency: ${alignr}${freq dyn} MHz
+${offset 15}${color FFFDE2}CPU:$color ${cpu}% ${color yellow}${cpubar 5}${color FFFDE2}
+${offset 15}Core 1   ${color ff9300}${cpubar cpu1 6}${color FFFDE2}
+${offset 15}Core 2   ${color ff7300}${cpubar cpu2 6}${color FFFDE2}
+${offset 15}Core 3   ${color ff4300}${cpubar cpu3 6}${color FFFDE2}
+${offset 15}Core 4   ${color ff1300}${cpubar cpu4 6}${color FFFDE2}
+${offset 15}Core 5   ${color ff1300}${cpubar cpu5 6}${color FFFDE2}
+${offset 15}Core 6   ${color ff1300}${cpubar cpu6 6}${color FFFDE2}
+${offset 15}${font}${color FFFDE2}Procs:$color $processes  ${color FFFDE2}Run:$color $running_processes Temp: ${acpitemp}°C
+${offset 15}${color FFFDE2}RAM Usage:$color $mem${color0}/${color4}$memmax - $memperc% 
+${offset 15}${color FF0000}${membar 5}
+${font Entopia:bold:size=12}${color FF69B4}CDUT NETWORK ${hr 2}${font}
+${offset 15}${color FFFDE2}Ext IP Addr ${color 33E9FF}${alignr}${exec cat /home/lzf/env/myip.txt}
+${offset 15}${color FFFDE2}GateWay:${color 33E9FF}${alignr}${gw_ip}
+${offset 5}${font Entopia:bold:size=12}${color orange}LAN  ${stippled_hr 1}
+${offset 15}${font}${color FFFDE2}IPv4 Addr ${color 33E9FF}${alignr}${addr eno1}
+${offset 15}${color green}${font}▼ $color${downspeed eno1} ${alignr}${color green}▲ $color${upspeed eno1}
+${offset 15}${font}${color}DOWN ${downspeedgraph eno1 32,0 324D23 77B753}
+${offset 15}${font}${color}UP   ${upspeedgraph eno1 32,0 104E8B ffff00}
+${font Entopia:bold:size=12}${color D8BFD8}GPU ${hr 2}
+${offset 15}${font}${color FF1493}{exec nvidia-smi | grep % | cut -c 85-92}
+${offset 15}${font}${color FFFDE2}${exec nvidia-smi | grep % | cut -c 71-73}%${goto 80}${exec nvidia-smi | grep % | cut -c 31-33}W/${exec nvidia-smi | grep % | cut -c 38-40}W${goto 200}${execi 60 nvidia-smi | grep % | cut -c 9-10}°C${alignr}${exec nvidia-smi | grep % | cut -c 46-50} MB
+
+${font Entopia:bold:size=12}${color 7cfc00} DISKINFO ${hr 2}
+${offset 15}${font}${color FFFDE2}disk : ${diskio}
+${offset 15}${font}${color FFFDE2}Disk I/O: 
+${offset 15}${font}${diskiograph 32,0 ff7300 ff7300}
+${font Entopia:bold:size=12}${color FF7F24}PROCESS ${hr 2}${font}
+${offset 15}${font Noto sans:size=9}${color FF7878}Name	${alignr}PID     CPU%  MEM%
+${offset 15}${color FF7878}${top name 1} ${alignr}${top pid 1}  ${top cpu 1}   ${top mem 1}
+${offset 15}${color FF7878}${top name 2} ${alignr}${top pid 2}  ${top cpu 2}   ${top mem 2}
+${offset 15}${color FF7878}${top name 3} ${alignr}${top pid 3}  ${top cpu 3}   ${top mem 3}
+${offset 15}${color FF7878}${top name 4} ${alignr}${top pid 4}  ${top cpu 4}   ${top mem 4}
+${offset 15}${color FF7878}${top name 5} ${alignr}${top pid 5}  ${top cpu 5}   ${top mem 5}
+${offset 15}${color FF7878}${top name 6} ${alignr}${top pid 6}  ${top cpu 6}   ${top mem 6}
+${offset 15}${color FF7878}${top name 7} ${alignr}${top pid 7}  ${top cpu 7}   ${top mem 7}
+${offset 15}${color FF7878}${top name 8} ${alignr}${top pid 8}  ${top cpu 8}   ${top mem 8}
+${font Entopia:bold:size=12}${color 33E9FF}END ${hr 2}${font}
+]]
+```
+上述conky文件对应图中第二张图的Style
+查看效果：`conky -c ~/.config/conky/.conkyrc`
+- 设置开机启动
+设置一个脚本
+`sudo nvim /home/lzf/softwares/conky/startconky.sh`
+写入如下内容：
+``` bash
+sleep 5
+conky -c /home/lzf/softwares/conky/.conkyrc
+```
+在应用列表中找到startup application，然后加入以下条目：
+<img src="./fig/sourceconky.png">
+
+<div align=center STYLE="page-break-after: always;">
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <font size=12 face="黑体">
+        Chapter2:地震软件篇
+    </font>
+</div>
+
 # Madagascar
 为什么要叫mada（
 <img src="./fig/mada.png">
@@ -247,7 +377,7 @@ Madagascar是一个用于多维数据分析和可重复计算实验的开源软�
   为了方便查错所以这里分开写供安装使用吧
   -  `sudo apt-get install libxaw7-dev freeglut3-dev libnetpbm10-dev libgd-dev` 
   -  `sudo apt-get install libplplot-dev libavcodec-dev libcairo2-dev libjpeg-dev`
-  -  `sudo apt-get install swig python-dev python-numpy g++ gfortran` 
+  -  `sudo apt-get install swig python3-dev python3-numpy g++ gfortran` 
   -  `sudo apt-get install libopenmpi-dev libfftw3-dev libsuitesparse-dev scons git`
 2. 配置安装路径
   - 配置matlab环境变量,制作mex链接
@@ -287,6 +417,7 @@ export RSFFIGS=/home/lzf/data/.Mada/Figure/
 export RSFALTFIGS=/home/lzf/data/.Mada/Figure1/ 
 export RSFMEMSIZE=30000
 ```
+
 5. 安装成功测试
 终端输入`sfin`:
 <img src="./fig/sfin.png">
@@ -307,6 +438,207 @@ Flow('filter',None,'spike n1=1000 k1=300 | bandpass fhi=2 phase=y')
 #
 Result('filter','wiggle clip=0.02 title="Welcome to Madagascar"')
 End()
+```
+6. 英文版手册
+```
+=======================
+Madagascar Installation
+=======================
+
+Prerequisites
+=============
+
+   1. C compiler. ANSI-compliant compiler such as GCC should work. GCC
+   usually comes pre-installed on Linux machines.
+
+   2. Python interpreter. Python is an interpretable programming
+   language. It is used in Madagascar installation scripts and project
+   management scripts. Python comes pre-installed on some
+   platforms. Madagascar supports both Python 2.7 and Python 3.
+
+For more information see:
+http://ahay.org/wiki/Main_Page
+http://ahay.org/wiki/Installation
+http://ahay.org/wiki/Advanced_Installation
+
+Software construction
+=====================
+
+   1. Configuration.
+
+      Change to the top Madagascar source directory and run
+
+      ./configure --prefix=/directory/where/you/want/madagascar/installed
+
+      You can examine the config.py file that this command
+      generates. Additional options are available. You can obtain a
+      full list of customizable variables by running "scons -h". For
+      example, to install Fortran-90 API bindings in addition to the
+      basic package, run
+
+      ./configure --prefix=/directory/where/you/want/madagascar/installed \
+      API=fortran-90 
+
+   2. Building and installing the package.
+
+      Run "make install" or the following two commands in succession:
+
+      make 
+      make install
+
+      If you need "root" privileges for installing under $RSFROOT, you
+      may need to run
+
+      make
+      su
+      make install
+
+      or
+
+      make
+      sudo make install
+
+   3. User setup
+
+      If your shell is sh or bash, add to your $HOME/.bashrc and
+      $HOME/.bash_profile files the line
+
+      source RSFROOT/share/madagascar/etc/env.sh
+
+      where RSFROOT is the install directory you specified in the --prefix 
+      option to ./configure. If your shell is (t)csh, add to your $HOME/.cshrc
+      file the line
+
+      source RSFROOT/share/madagascar/etc/env.csh
+
+      Be aware that on some systems the default value for DATAPATH set in the 
+      script above may get automatically cleaned at some intervals, so if you 
+      want to keep your data binaries for a long time, set DATAPATH in your 
+      resource file to another location where you have write access and that 
+      allows large files. Remember that the value of DATAPATH should have a 
+      slash at the end. 
+
+Testing Your Installation
+=========================
+
+Here are a few simple tests and and a brief introduction to Madagascar:
+
+Typing any Madagascar command in a terminal window without parameters should
+generate a brief documentation on that command. Try one of the following:
+
+	sfin
+	sfattr
+	sfspike
+	sfbandpass
+	sfwiggle
+
+If you get an error like "Command not found", you may not have your
+PATH environment variable set correctly, or you may need to
+issue the rehash command.
+
+Now try making a simple Madagascar data file:
+
+	sfspike n1=1000 k1=300 > spike.rsf
+
+This command generates a one dimensional list of 1000 numbers, all zero except
+for a spike equal to one at position 300. If this generates an error like
+
+	Cannot write to data file /path/spike.rsf@: Bad file descriptor
+
+you may need to create the directory pointed to by your DATAPATH
+environment variable.
+
+The file spike.rsf is a text header.  The actual data are stored in
+the binary file pointed to by the in parameter in the header.  You
+can look at the header file directly with more, or better, examine
+the file properties with
+
+	sfin spike.rsf
+
+You can learn more about the contents of spike.rsf with
+
+	sfattr < spike.rsf
+
+
+The following command applies a bandpass filter to spike.rsf and puts
+the result in filter.rsf:
+
+	sfbandpass fhi=2 phase=y < spike.rsf > filter.rsf
+
+The following command makes a graphics file from filter.rsf:
+
+	sfwiggle clip=0.02 title="Welcome to Madagascar" < filter.rsf > filter.vpl
+
+If you have an X11 display program running, and your DISPLAY
+environment variable is set correctly, you can display the graphics file with:
+
+	sfpen < filter.vpl
+
+You can pipe Madagascar commands together and do the whole thing at once like
+this:
+
+	sfspike n1=1000 k1=300 | sfbandpass fhi=2 phase=y | \
+	sfwiggle clip=0.02 title="Welcome to Madagascar" | sfpen
+
+If you have SCons installed, you can use it to automate Madagascar processing.
+Here is a simple SConstruct file to make filter.rsf and filter.vpl :
+
+####################################
+#
+# Setting up
+#
+from rsf.proj import *
+
+#
+# Make filter.rsf
+#
+Flow('filter',None, 'spike n1=1000 k1=300 | bandpass fhi=2 phase=y')
+
+#
+# Make filter.vpl
+#
+Result('filter','wiggle clip=0.02 title="Welcome to Madagascar"')
+
+End()
+####################################
+
+Put the file in an empty directory, give it the name SConstruct,
+cd to that directory, and issue the command:
+
+	scons
+
+The graphics file is now stored in the Fig subdirectory.  You can
+view it manually with:
+
+	sfpen Fig/filter.vpl
+
+... or you can use:
+
+	scons view
+
+When an SConstruct file makes more than one graphics file, the  
+
+	scons view 
+
+command will display all of them in sequence. 
+
+Now edit the SConstruct file: change the title string on the
+Result line to "Hello World!", save the file, and rerun the scons
+command. 
+
+You will see that scons has figured out that the file
+filter.rsf does not need to be rebuilt because nothing that affects
+it has changed. Only the file filter.vpl is rebuilt.
+
+Bugs
+====
+
+Please report all problems encountered during software construction to
+the RSF-user mailing list:
+
+https://lists.sourceforge.net/lists/listinfo/rsf-user
+
+You can also send suggestions for improvement of this document to the list.
 ```
 ## mada 保存图片：
 `vpconvert *.vpl format=jpg color=y bgcolor=white`
@@ -358,7 +690,19 @@ make sfinstall  # segd模块
 终端输入`suplane | suxwigb`
 <img src="./fig/su.png">
 ## 二进制数据绘图
-`ximage <acc_vp_2.dat n1=400 prec=99 cmap=rgb2`
+`ximage <acc_vp_2.dat n1=400 perc=99 cmap=rgb2`
+
+# GeoEast
+## 软件开发模块
+1. Geoeast自带了常用的许多python库，使用深度学习训练好的网络模型在进行封装的时候只需要把代码调整好只使用GPU运行即可。
+
+<div align=center STYLE="page-break-after: always;">
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <font size=12 face="黑体">
+        Chapter3:编程语言篇
+    </font>
+</div>
 
 # C/C++/C-cuda/mpich
 - 错误调试
@@ -421,6 +765,204 @@ all:
 clean:
     rm -f *.o Obser
 ```
+## 一些环境配置
+``` 
+# >>> matlab <<<
+export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
+export PATH=$PATH:/home/lzf/softwares/matlab/bin
+alias mrun="matlab -nodesktop -nosplash -logfile `date +%Y_%m_%d-%H_%M_%S`.log -r"
+
+# >>> MADAGASCAR <<<
+source ~/softwares/Madagascar/RSFROOT/share/madagascar/etc/env.sh
+export DATAPATH=/media/lzf/Work/data/RSFDATA/data/
+export RSFFIGS=/media/lzf/Work/data/RSFDATA/Figure/
+export RSFALTFIGS=/media/lzf/Work/data/RSFDATA/Figure1/
+export RSFMEMSIZE=30000
+
+# >>> Seismic Unix <<<
+export CWPROOT_HOME=/home/lzf/softwares/seismic_unix/cwp
+export PATH=$PATH:${CWPROOT_HOME}/bin 
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${CWPROOT_HOME}/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${CWPROOT_HOME}/include
+
+# >>> MPICH <<<
+export MPI_HOME=/home/lzf/softwares/MPICH/MPICC
+export PATH=$PATH:${MPI_HOME}/bin 
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${MPI_HOME}/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${MPI_HOME}/include
+
+# >>> cuda env <<<
+export CUDA_HOME=/usr/local/cuda/bin
+export PATH=$PATH:${CUDA_HOME}/bin 
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${CUDA_HOME}/lib64
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${CUDA_HOME}/include
+
+# >>> FFTW env <<<
+export FFTW_DIR=/home/lzf/softwares/FFTW
+export FFTW=/home/lzf/softwares/FFTW/install_pack/fftw-2.1.5
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${FFTW_DIR}/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${FFTW_DIR}/include
+
+# >>> curveLab env <<<
+export FDCT=/home/lzf/softwares/CurveLab/CurveLab-2.1.3
+
+# >>> SWIG <<<
+export SWIG_HOME=/home/lzf/softwares/SWIG
+export PATH=$PATH:${SWIG_HOME}/bin 
+
+# >>> texlive env <<<
+export TexMan="/usr/local/texlive/2023/texmf-dist/doc/man"
+export TexInfo="/usr/local/texlive/2023//texmf-dist/doc/info"
+export TexLive="/usr/local/texlive/2023/bin/x86_64-linux"
+export MANPATH="$MANPATH:$TexMan"
+export INFOPATH="$INFOPATH:$TexInfo"
+export PATH="$PATH:$TexLive"
+```
+# matlab 
+## 终端运行
+`matlab -batch filename(no'.m'!!) taskset -c 1-16(core_number 1-16)`
+## 绘图demo
+``` matlab
+p = 0;p = p+1;figure(p);
+clip = 
+mm= 
+filename2 = ['11source_seismogram_obs_sing_csg.dat'];
+wave = zread(filename2,[n1,n2]);
+imagesc(wave1,[-clip,clip]);colormap(mm);
+%axis off
+set(gca,'looseInset',[0 0 0 0]);
+set(gcf,'unit','normalized','position',[0.1,0.1,0.3,0.8] );
+```
+## 绘图色块
+- 自带色块：
+  
+| colormap()   | color         |
+| ------- | ----------------   | 
+|parula             | <img src="./fig/colorbar/colormap_parula_update17a.png"> |
+|turbo              | <img src="./fig/colorbar/colormap_turbo.png">            |
+|hsv                | <img src="./fig/colorbar/colormap_hsv.png">              |
+|hot                | <img src="./fig/colorbar/colormap_hot.png">              |
+|cool               | <img src="./fig/colorbar/colormap_cool.png">             |
+|spring             | <img src="./fig/colorbar/colormap_spring.png">           |
+|summer             | <img src="./fig/colorbar/colormap_summer.png">           |
+|autumn             | <img src="./fig/colorbar/colormap_autumn.png">           |
+|winter             | <img src="./fig/colorbar/colormap_winter.png">           |
+|gray               | <img src="./fig/colorbar/colormap_gray.png">             |
+|bone               | <img src="./fig/colorbar/colormap_bone.png">             |
+|copper             | <img src="./fig/colorbar/colormap_copper.png">           |
+|pink               | <img src="./fig/colorbar/colormap_pink.png">             |
+|sky (自 R2023a 起)  | <img src="./fig/colorbar/colormap_sky.png">              |
+|abyss (自 R2023b 起)| <img src="./fig/colorbar/colormap_abyss.png">            |
+|jet                | <img src="./fig/colorbar/colormap_parula_update17a.png"> |
+|lines              | <img src="./fig/colorbar/colormap_jet.png">              |
+|colorcube          | <img src="./fig/colorbar/colormap_colorcube.png">        |
+|prism              | <img src="./fig/colorbar/colormap_prism.png">            |
+|flag               | <img src="./fig/colorbar/colormap_flag.png">             |
+|white              | <img src="./fig/colorbar/colormap_white.png">            |
+- othercolors：
+  [下载链接](https://ww2.mathworks.cn/matlabcentral/fileexchange/30564-othercolor)
+  <img src="./fig/colorbar/othercolor1-100.png">
+  <img src="./fig/colorbar/othercolor101-200.png">
+  <img src="./fig/colorbar/othercolor201-283.png">
+# python
+## anaconda&&pip
+- 创建虚拟环境
+`conda create -n xxxxx(名字) python=3.8`
+- 删除虚拟环境
+`conda remove -n xxxxx(名字) --all`
+- 删除某个包
+`conda remove package_name`
+- 复制虚拟环境
+`conda create -n B --clone A`
+- 导出虚拟环境
+`conda env export > environment.yaml`
+`pip list --format=freeze> requirements.txt`
+- 根据导出创建
+`conda env create -f environment.yaml`
+`conda install --yes --file requirements.txt`
+`pip install -r requirements.txt`
+## 一些依赖包的install
+- Curvelab
+  虚拟环境中安装依赖库：`python3 -m pip install git+https://github.com/PyLops/curvelops@0.23`
+## matplot 绘图色块
+- 自带colormap
+<img src="./fig/matplotcolor/f1.png">
+<img src="./fig/matplotcolor/f2.png"> 
+<img src="./fig/matplotcolor/f3.png"> 
+<img src="./fig/matplotcolor/f4.png"> 
+<img src="./fig/matplotcolor/f5.png"> 
+<img src="./fig/matplotcolor/f6.png"> 
+<img src="./fig/matplotcolor/f7.png"> 
+
+### matplot 绘图demo
+``` python
+fig = plt.figure(figsize=(16, 8),dpi=100)
+plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
+
+ax1 = fig.add_subplot(121)
+ax1.set_title('bpg ground roll patch')
+ax1.imshow(hyper, cmap=mm, vmax=clip, vmin=-clip,aspect=0.05)
+
+ax2 = fig.add_subplot(122)
+ax2.set_title('denoise patch')
+ax2.imshow(gwden, cmap=mm, vmax=clip, vmin=-clip,aspect=0.05)
+
+plt.show()
+```
+- 自定义colormap示意
+``` python
+# ==================================================================================
+#    Copyright (C) 2024 Chengdu University of Technology.
+#    Copyright (C) 2024 Zifei Li.
+#    
+#    Filename：seis.py
+#    Author：Zifei Li
+#    Institute：Chengdu University of Technology
+#    Email：202005050218@stu.cdut.edu.cn
+#    Work：2024/05/20/
+#    Function：
+#    
+#    This program is free software: you can redistribute it and/or modify it 
+#    under the terms of the GNU General Public License as published by the Free
+#    Software Foundation, either version 3 of the License, or an later version.
+#=================================================================================
+import numpy as np
+import math
+import torch
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+
+def seis(input):
+    N=40
+    L=40
+    if input == 1:  #(black-brown)
+        u1 = np.concatenate((0.5 * np.ones(N), np.linspace(0.5, 1, 128-N), np.linspace(1, 0, 128-N), np.zeros(N)))
+        u2 = np.concatenate((0.25 * np.ones(N), np.linspace(0.25, 1, 128-N), np.linspace(1, 0, 128-N), np.zeros(N)))
+        u3 = np.concatenate((np.zeros(N), np.linspace(0, 1, 128-N), np.linspace(1, 0, 128-N), np.zeros(N)))  
+    elif input == 2: #(black-red)
+        u1 = np.concatenate((np.ones(N), np.linspace(1, 1, 128-N), np.linspace(1, 0, 128-N), np.zeros(N)))
+        u2 = np.concatenate((np.zeros(N), np.linspace(0, 1, 128-N), np.linspace(1, 0, 128-N), np.zeros(N)))
+        u3 = np.concatenate((np.zeros(N), np.linspace(0, 1, 128-N), np.linspace(1, 0, 128-N), np.zeros(N)))
+    elif input == 3: #(blue-red)
+        u1 = np.concatenate((np.zeros(N), np.linspace(0., 1, 128 - N - L//2), np.ones(L), np.linspace(1, 0.5, 128 - L//2)))
+        u2 = np.concatenate((np.zeros(N), np.linspace(0., 1, 128 - N - L//2), np.ones(L), np.linspace(1, 0., 128 - N - L//2), np.zeros(N)))
+        u3 = np.concatenate((np.linspace(0.5, 1, 128 - L//2), np.ones(L), np.linspace(1, 0., 128 - N - L//2), np.zeros(N)))
+    
+    M = np.column_stack((u1, u2, u3))
+    # 创建自定义的colormap
+    custom_colormap = mcolors.ListedColormap(M)
+    return custom_colormap
+```
+
+<div align=center STYLE="page-break-after:always;"></div>
+<div align=center STYLE="page-break-after:always;">
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <font size=12 face="黑体">
+        Chapter4:Useritem
+    </font>
+</div>
 
 # Linux杂七杂八的东西
 ## cuda安装与路径配置:
@@ -528,8 +1070,9 @@ export PATH=$PATH:$LD_LIBRARY_PATH:$CUDA_HOME
 `watch -n 2 -d nvidia-smi`
 ## 进程中断
 `kill -9 -PID`
-## 坚果云-zotero同步（稳定方法）
-
+## Zotero/Zotero7文献管理
+Zotero是一个强大的开源文献管理软件，支持相当多的插件开发，这些插件能很好地帮助用户科研阅读。
+### 坚果云-zotero同步（稳定方法）
 1. 注册坚果云并建立一个同步文件夹命名为zotero
 <img src="./fig/zotero1.png">
 
@@ -545,7 +1088,6 @@ export PATH=$PATH:$LD_LIBRARY_PATH:$CUDA_HOME
 编辑-首选项-高级-文件和文件夹，分别进行图示配置，上面一个路径存放同步文件夹位置，用于在不同系统下读取相同相对路径格式的文件夹,因为我们共享文件夹库是用ZotFile生成的，默认格式完全相同，这样可以实现在不同操作系统下的文献读取。下面一个位置是Zotero的所有插件保存文件夹，两个系统需要保证文件夹的路径完全一样，当然也可以使用zotero自动同步的功能，插件的大小很小，不影响。
 
 4. 设置坚果云下载同步
-
 该步骤按理论说采取本方法是不需要的，但是为了保险起见仍然在这里记载一下配置方法。坚果云用户-账户信息-安全选项，给你的zotero授权。
  <img src="./fig/zotero4.2.png">
  编辑-首选项-同步，根据坚果云网页所给的密码信息添加授权
@@ -556,69 +1098,30 @@ bilibili单系统配置教程：
 可配合文案与视频理解。
 经一位朋友的分享，有兴趣进一步了解云同步相关知识的同学，可以看看下列文章：
 https://www.zhihu.com/question/279410792/answer/1105909839
+
+zotero 7版本的同步和上述相同，只不过zotofile插件变成了Attanger，其余设置方法完全相同
+ <img src="./fig/zotero_7/attanger.png">
+ <img src="./fig/zotero_7/file_zotero.png">
+
+### 配置AI
+配置AI的核心插件为Awesome GPT(https://zotero-chinese.com/user-guide/plugins/zotero-gpt.html)
+具体操作如下（以deepseek+通义千问为例）
+1. 配置api接口，在所需配置的大模型网站找到ai接口，如openai网站的(https://platform.openai.com/api-keys):
+ <img src="./fig/zotero_7/api_openai.png">
+deepseek网站的(https://platform.deepseek.com/api_keys):
+ <img src="./fig/zotero_7/api_deepseek.png">
+在网站上创建一个api key，复制密码字符
+
+2. 在Zotero-编辑-设置中找到GPT设置，按照图示配置
+ <img src="./fig/zotero_7/zotero_GPT.png">
+Base API中设置大模型链接，API key粘贴进去，然后选择大模型，其中Tem控制只是密度，embedding选项为是否设置通用的向量支持模型，由于dpsk不支持向量模型所以另选通义千问来设置，设置方法和上述步骤一样。如果选择支持向量模型的大模型那这块就不用设置。
+配置好了之后就可进行如下的ai辅助:
+<img src="./fig/zotero_7/aiques.png">
 ## pandoc
 `pandoc.exe test.md -f markdown -t html -s -o test.html`
 ## 查看ip
 ifconfig
-# matlab 
-## 终端运行
-`matlab -batch filename(no'.m'!!) taskset -c 1-16(core_number 1-16)`
-## 绘图色块
-- 自带色块：
-  
-| colormap()   | color         |
-| ------- | ----------------   | 
-|parula             | <img src="./fig/colorbar/colormap_parula_update17a.png"> |
-|turbo              | <img src="./fig/colorbar/colormap_turbo.png">            |
-|hsv                | <img src="./fig/colorbar/colormap_hsv.png">              |
-|hot                | <img src="./fig/colorbar/colormap_hot.png">              |
-|cool               | <img src="./fig/colorbar/colormap_cool.png">             |
-|spring             | <img src="./fig/colorbar/colormap_spring.png">           |
-|summer             | <img src="./fig/colorbar/colormap_summer.png">           |
-|autumn             | <img src="./fig/colorbar/colormap_autumn.png">           |
-|winter             | <img src="./fig/colorbar/colormap_winter.png">           |
-|gray               | <img src="./fig/colorbar/colormap_gray.png">             |
-|bone               | <img src="./fig/colorbar/colormap_bone.png">             |
-|copper             | <img src="./fig/colorbar/colormap_copper.png">           |
-|pink               | <img src="./fig/colorbar/colormap_pink.png">             |
-|sky (自 R2023a 起)  | <img src="./fig/colorbar/colormap_sky.png">              |
-|abyss (自 R2023b 起)| <img src="./fig/colorbar/colormap_abyss.png">            |
-|jet                | <img src="./fig/colorbar/colormap_parula_update17a.png"> |
-|lines              | <img src="./fig/colorbar/colormap_jet.png">              |
-|colorcube          | <img src="./fig/colorbar/colormap_colorcube.png">        |
-|prism              | <img src="./fig/colorbar/colormap_prism.png">            |
-|flag               | <img src="./fig/colorbar/colormap_flag.png">             |
-|white              | <img src="./fig/colorbar/colormap_white.png">            |
-- othercolors：
-  [下载链接](https://ww2.mathworks.cn/matlabcentral/fileexchange/30564-othercolor)
-  <img src="./fig/colorbar/othercolor1-100.png">
-  <img src="./fig/colorbar/othercolor101-200.png">
-  <img src="./fig/colorbar/othercolor201-283.png">
-# python
-## anaconda
-- 创建虚拟环境
-`conda create -n xxxxx(名字) python=3.8`
-- 删除虚拟环境
-`conda remove -n xxxxx(名字) --all`
-- 删除某个包
-`conda remove package_name`
-- 复制虚拟环境
-`conda create -n B --clone A`
-- 导出虚拟环境
-`conda env export > environment.yaml`
-- 根据导出创建
-`conda env create -f environment.yaml`
-## 一些依赖包的install
-- Curvelab
-  虚拟环境中安装依赖库：`python3 -m pip install git+https://github.com/PyLops/curvelops@0.23`
-## matplot 绘图
-<img src="./fig/matplotcolor/f1.png">
-<img src="./fig/matplotcolor/f2.png"> 
-<img src="./fig/matplotcolor/f3.png"> 
-<img src="./fig/matplotcolor/f4.png"> 
-<img src="./fig/matplotcolor/f5.png"> 
-<img src="./fig/matplotcolor/f6.png"> 
-<img src="./fig/matplotcolor/f7.png"> 
+## VPN
 
 # github本地上传
 ## 前置条件
