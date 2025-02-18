@@ -529,27 +529,31 @@ export PATH=$PATH:$LD_LIBRARY_PATH:$CUDA_HOME
 ## 进程中断
 `kill -9 -PID`
 ## 坚果云-zotero同步（稳定方法）
-1. **注册坚果云并建立一个同步文件夹命名为zotero**
+
+1. 注册坚果云并建立一个同步文件夹命名为zotero
 <img src="./fig/zotero1.png">
-2. **分别在本地建立linux-windows两个文件夹，每个文件夹下包含zotero文件夹，并同步到云端的zotero文件**
+
+2. 分别在本地建立linux-windows两个文件夹，每个文件夹下包含zotero文件夹，并同步到云端的zotero文件
 <img src="./fig/zotero2.1.png"> <img src="./fig/zotero2.2.png"> <img src="./fig/zotero2.3.png">
 如果不采取上面的形式，部分操作系统在同步文件夹的时候会出现图3所示的情况，为一个链接形式，所以分开系统同步文件夹是不错的选择
-3. **安装ZotFile github开源**
+
+3. 安装ZotFile github开源
 工具-ZotFile preference
 <img src="./fig/zotero3.png">
 下面一个文件夹链接到同步文件夹，该文件夹用于存放使用Zotero导出的pdf文件夹，上面一个链接可选可不选，上面一个链接为自动将链接内的pdf打为ZotFile标签。
 <img src="./fig/zotero3.1.png">
 编辑-首选项-高级-文件和文件夹，分别进行图示配置，上面一个路径存放同步文件夹位置，用于在不同系统下读取相同相对路径格式的文件夹,因为我们共享文件夹库是用ZotFile生成的，默认格式完全相同，这样可以实现在不同操作系统下的文献读取。下面一个位置是Zotero的所有插件保存文件夹，两个系统需要保证文件夹的路径完全一样，当然也可以使用zotero自动同步的功能，插件的大小很小，不影响。
 
-4. **设置坚果云下载同步***
+4. 设置坚果云下载同步
+
 该步骤按理论说采取本方法是不需要的，但是为了保险起见仍然在这里记载一下配置方法。坚果云用户-账户信息-安全选项，给你的zotero授权。
  <img src="./fig/zotero4.2.png">
  编辑-首选项-同步，根据坚果云网页所给的密码信息添加授权
  <img src="./fig/zotero4.1.png">
 
- bilibili单系统配置教程：
+bilibili单系统配置教程：
 【文献管理软件Zotero详细教程四（如何实现与坚果云的云同步）】https://www.bilibili.com/video/BV1cP411N766/
- 可配合文案与视频理解。
+可配合文案与视频理解。
 经一位朋友的分享，有兴趣进一步了解云同步相关知识的同学，可以看看下列文章：
 https://www.zhihu.com/question/279410792/answer/1105909839
 ## pandoc
@@ -617,19 +621,23 @@ ifconfig
 <img src="./fig/matplotcolor/f7.png"> 
 
 # github本地上传
-1. 在本地需要上传的文件夹建立git仓库并且初始化
-`git init`
-初始化之后，终端会显示git连接命令：`git:main x [19:46:22] C:number`
-2. 提交改变到缓存
-`git commit -m 'description`
-3. 本地git仓库关联到github仓库
-`git remote add origin git@github.com:Lee-zifei/code.git`
-- 如果仓库已经存在链接，但是又是第一次上传，删除链接命令如下：`git remote remove origin`
-4. 创建ssh链接并拷贝到github ssh上
+## 前置条件
+创建ssh链接并拷贝到github ssh上
 生成密钥对：`ssh-keygen`
 查看密钥对：`cat ~/.ssh/id_rsa.pub` 默认位置在/home/lzf/.ssh下
 github授权： <img src="./fig/github_ssh.png">
-5. 添加文件
+## 本地上传流程
+1. 在本地需要上传的文件夹建立git仓库并且初始化
+`git init`
+初始化之后，终端会显示git连接命令：`git:main x [19:46:22] C:number`
+2. 添加文件
 `git add 'files'`
-6. 上传
-`git push -u origin main`
+全部添加
+`git add .`
+3. 提交改变到缓存
+`git commit -m 'what are you doing'`
+4. 本地git仓库关联到github仓库
+`git remote add origin git@github.com:Lee-zifei/zifei.git`
+- 如果仓库已经存在链接，但是又是第一次上传，删除链接命令如下：`git remote remove origin`
+5. 上传
+`git push -u origin main (--force)`
