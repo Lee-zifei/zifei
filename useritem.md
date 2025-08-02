@@ -1,7 +1,7 @@
 <div align=center STYLE="page-break-after: always;">
 
 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-    <font size=12 face="黑体">
+    <font size=12 face="宋体">
         搭建属于你的地震数据处理Ubuntu平台
     </font>
      <font size=6 face="楷体">
@@ -11,9 +11,10 @@
         <font size = 4>
         学校：成都理工大学
         学院：地球物理学院
-        作者：李子霏<br/>
+        作者：李子霏
+        <br/>
         <br/><br/>
-        2021.06.20-
+        2021.06.20-2025.04.11
     </font>
 </div>
 
@@ -33,7 +34,7 @@
 <div align=center STYLE="page-break-after: always;">
 
 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-    <font size=12 face="黑体">
+    <font size=12 face="宋体">
         Chapter1:系统软件篇
     </font>
 </div>
@@ -358,7 +359,7 @@ conky -c /home/lzf/softwares/conky/.conkyrc
 <div align=center STYLE="page-break-after: always;">
 
 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-    <font size=12 face="黑体">
+    <font size=12 face="宋体">
         Chapter2:地震软件篇
     </font>
 </div>
@@ -369,6 +370,7 @@ conky -c /home/lzf/softwares/conky/.conkyrc
 
 Madagascar是一个用于多维数据分析和可重复计算实验的开源软件包。它的使命是提供方便而强大的环境、简单的地震数据常用处理函数、和便捷的代码专业工具。适用于在地球物理学和相关领域从事数字图像和数据处理的研究人员。使用mada项目管理系统开发的技术以历史记录的形式传输，这些历史成为“计算配方”，由系统用户进行验证、交换和修改。
 
+Madagascar的安装是非常标准的Linux软件安装方式，总体步骤均为配置configuration文件、安装、在环境变量中添加环境。
 ## 安装mada
 1. 下载mada安装文件:
   `git clone https://github.com/ahay/src RSFSRC`或者`svn co https://github.com/ahay/src/trunk RSFSRC`
@@ -644,8 +646,30 @@ You can also send suggestions for improvement of this document to the list.
 `vpconvert *.vpl format=jpg color=y bgcolor=white`
 ## mada常用命令:
 sfadd减法      :`add scale=1,-1 ${SOURCES[1]}`
-sfwindow参数   : n#=* 指的在第#个道集采多* 长，f#=* 指的是采样间隔，
+sfwindow       : n#=* 指的在第#个道集采多* 长，f#=* 指的是采样间隔，
+sfreverse      : 翻转数轴
 
+## mada撰写论文
+1. 主文件夹
+- 主文件夹下放置`.tex`文件，SConstruct脚本，处理数据的文件夹以及格式文件`.sty`，`.cls`等。
+<img src="./fig/mada_paper/mada_main_folder.png">
+其中SConstruct文件制定编译规则：
+``` python
+from rsf.tex import *
+os.environ['PSTEXPENOPTS']='color=y fat=3 fatmult=1.5'
+Paper('geophysics_twocolumn_0407_nomada',lclass='geophysics',options='manuscript',use='mathrsfs,CJKutf8,algorithm2e,amsmath,amssymb ',color="ALL")
+End ()
+```
+- `.tex`只放正文，`\documentclass`，` \usepackage`，`\begin{document}`这些均不用添加
+- `.tex`中插入图片时，声明`\setfigdir{Fig}`，自动在每张图片前面添加`/Fig/`路径，此操作是为了符合Mada文件夹规则，然后插入图片时再声明对应的处理文件夹即可。例子如图
+``` tex
+\inputdir{CDUTneural_network} %文件夹位置
+\plot{CDUTneural_network}{width=1\columnwidth}  %绘制图片，其中图片为./CDUTneural_network/Fig/CDUTneural_network.eps
+{The architecture of CDUTnet}
+```
+
+2. 处理文件夹
+处理文件夹下包含需要绘制图片的数据，即标准的mada文件夹，在此文件夹下执行`scons lock`会自动运行脚本然后将`.vpl`格式图片转化，再在主文件夹下执行`scons xxx.pdf`即可编译文章。
 # Seismic Unix
 SU是科罗拉多州矿业学院开发的一个免费地震处理软件。国内外很多科研人员及学生都借助于他来进行创作，SU开放源代码，可以方便地在其基础上进行再创作。其实有了mada就不用su了，一个爹生的。
 ## 安装su
@@ -668,7 +692,7 @@ tar -xvf cwp_su_all_xx_tar
   - sudo apt-get install libxmu-dev
   - sudo apt-get install libxi-dev
   - sudo apt-get install gfortran
-2. 配置环境
+1. 配置环境
 - .rc环境变量文件中写入
 ```bash
 export CWPROOT=/where/you/su installpack/su
@@ -686,7 +710,7 @@ make utils
 make xminstall
 make sfinstall  # segd模块
 ```
-3. 安装成功测试
+1. 安装成功测试
 终端输入`suplane | suxwigb`
 <img src="./fig/su.png">
 ## 二进制数据绘图
@@ -699,23 +723,26 @@ make sfinstall  # segd模块
 <div align=center STYLE="page-break-after: always;">
 
 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-    <font size=12 face="黑体">
+    <font size=12 face="宋体">
         Chapter3:编程语言篇
     </font>
 </div>
 
 # C/C++/C-cuda/mpich
 - 错误调试
-在makefile文件中添加`CFALGS= -g -Wall`生成调试文件
+1. 在makefile文件中添加`CFALGS= -g -Wall`生成调试文件
 具体做法：
 `$(MPICC) -g -Wall -g -c`
 `$(NVCC)  -g -w -c`
 然后在 GDB 中运行程序并进行调试。例如，你可以使用 run 命令来运行程序，使用 break 命令设置断点，使用 print 命令打印变量的值，等等。详细的使用方法可以参考 GDB 的文档或者相关教程。
+2. 使用valgrind
+    `valgrind --track-origins=yes ./RTM`
+
 - mpicc
 MPICC运行结果不正确大部分原因是进程问题，可以将`mpicc -np`参数改为1然后尝试运行
 - makefile模版
   根据需要更改对应路径位置
-```
+``` cpp
 # ==================================================================================
 #    Copyright (C) 2024 Chengdu University of Technology.
 #    Copyright (C) 2024 Zifei Li.
@@ -864,6 +891,14 @@ set(gcf,'unit','normalized','position',[0.1,0.1,0.3,0.8] );
   <img src="./fig/colorbar/othercolor1-100.png">
   <img src="./fig/colorbar/othercolor101-200.png">
   <img src="./fig/colorbar/othercolor201-283.png">
+## 使用问题
+1. 解决高分辨率显示器字体过小
+```
+    s = settings;
+    s.matlab.desktop.DisplayScaleFactor;
+    s.matlab.desktop.DisplayScaleFactor.PersonalValue = 2.0;
+```
+表示将字体放大到2.0，解决工具栏字体过小的问题
 # python
 ## anaconda&&pip
 - 创建虚拟环境
@@ -959,11 +994,12 @@ def seis(input):
 <div align=center STYLE="page-break-after:always;">
 
 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-    <font size=12 face="黑体">
+    <font size=12 face="宋体">
         Chapter4:Useritem
     </font>
 </div>
-
+# VScode基本使用方法
+本节将会详细介绍vscode如何配置插件并且同步、创建你自己的本地Latex编译器等等，包含Texlive的基础使用知识
 # Linux杂七杂八的东西
 ## cuda安装与路径配置:
 1. .deb安装
@@ -986,34 +1022,23 @@ export PATH=$PATH:$LD_LIBRARY_PATH:$CUDA_HOME
 ```
 一台机子可以装多个版本的cuda，只要把cuda软链接到不同版本的cuda安装主文件夹就行，所以在安装cuda的时候切忌默认安装文件夹cuda，会覆盖多个版本，自己手动给安装文件夹带个后缀哦。
 <img src="./fig/cuda.png">
-## dpkg
+## dpkg应用管理
 - 安装软件
 `dpkg -i <.deb file name>`
-
 示例：`dpkg -i avg71flm_r28-1_i386.deb`
-
 - 安装一个目录下面所有的软件包
 `dpkg -R`
-
 示例：`dpkg -R /usr/local/src`
-
 - 释放软件包，但是不进行配置
 `dpkg –unpack package_file 如果和-R一起使用，参数可以是一个目录`
-
 示例：`dpkg –unpack avg71flm_r28-1_i386.deb`
-
 - 重新配置和释放软件包
 `dpkg –configure package_file`
-
 如果和-a一起使用，将配置所有没有配置的软件包
 示例：`dpkg –configure avg71flm_r28-1_i386.deb`
-
 - 删除软件包（保留其配置信息）
-
 `dpkg -r`
-
 示例：`dpkg -r avg71flm`
-
 - 替代软件包的信息
 `dpkg –update-avail <Packages-file`
 - 合并软件包信息
@@ -1060,6 +1085,11 @@ export PATH=$PATH:$LD_LIBRARY_PATH:$CUDA_HOME
 示例：`dpkg -p cacti`
 -  指定安装路径
 `dpkg 
+## snap软件管理
+- 查看已安装的应用
+`snap list`
+- 删除应用
+`sudo snam remove <name>`
 ## Nvidia驱动
 1. 安装
 官网下载对应型号的显卡驱动
@@ -1070,16 +1100,18 @@ export PATH=$PATH:$LD_LIBRARY_PATH:$CUDA_HOME
 `watch -n 2 -d nvidia-smi`
 ## 进程中断
 `kill -9 -PID`
+## 服务器后台运行
+创造一个sh脚本，里面写上python命令类似`python test.py --cfg ....`
+然后使用nohup:` nohup sh test.sh >test.log 2>&1 &`
+也可以直接`nohup $The command you need run$ >output.log 2>&1 &`
 ## Zotero/Zotero7文献管理
 Zotero是一个强大的开源文献管理软件，支持相当多的插件开发，这些插件能很好地帮助用户科研阅读。
 ### 坚果云-zotero同步（稳定方法）
 1. 注册坚果云并建立一个同步文件夹命名为zotero
 <img src="./fig/zotero1.png">
-
 2. 分别在本地建立linux-windows两个文件夹，每个文件夹下包含zotero文件夹，并同步到云端的zotero文件
 <img src="./fig/zotero2.1.png"> <img src="./fig/zotero2.2.png"> <img src="./fig/zotero2.3.png">
 如果不采取上面的形式，部分操作系统在同步文件夹的时候会出现图3所示的情况，为一个链接形式，所以分开系统同步文件夹是不错的选择
-
 3. 安装ZotFile github开源
 工具-ZotFile preference
 <img src="./fig/zotero3.png">
@@ -1092,13 +1124,11 @@ Zotero是一个强大的开源文献管理软件，支持相当多的插件开�
  <img src="./fig/zotero4.2.png">
  编辑-首选项-同步，根据坚果云网页所给的密码信息添加授权
  <img src="./fig/zotero4.1.png">
-
 bilibili单系统配置教程：
 【文献管理软件Zotero详细教程四（如何实现与坚果云的云同步）】https://www.bilibili.com/video/BV1cP411N766/
 可配合文案与视频理解。
 经一位朋友的分享，有兴趣进一步了解云同步相关知识的同学，可以看看下列文章：
 https://www.zhihu.com/question/279410792/answer/1105909839
-
 zotero 7版本的同步和上述相同，只不过zotofile插件变成了Attanger，其余设置方法完全相同
  <img src="./fig/zotero_7/attanger.png">
  <img src="./fig/zotero_7/file_zotero.png">
@@ -1137,10 +1167,12 @@ github授权： <img src="./fig/github_ssh.png">
 `git add 'files'`
 全部添加
 `git add .`
-3. 提交改变到缓存
+3. 提交改变到缓存并且标注what you are doing
 `git commit -m 'what are you doing'`
 4. 本地git仓库关联到github仓库
 `git remote add origin git@github.com:Lee-zifei/zifei.git`
 - 如果仓库已经存在链接，但是又是第一次上传，删除链接命令如下：`git remote remove origin`
 5. 上传
 `git push -u origin main (--force)`
+
+
