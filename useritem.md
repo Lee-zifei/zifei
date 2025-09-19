@@ -897,6 +897,10 @@ set(gcf,'unit','normalized','position',[0.1,0.1,0.3,0.8] );
     s = settings;
     s.matlab.desktop.DisplayScaleFactor;
     s.matlab.desktop.DisplayScaleFactor.PersonalValue = 2.0;
+
+    In 2025 relevant settings changed to :
+    s = settings;
+    s.matlab.desktop.Zoom.PersonalValue=125
 ```
 表示将字体放大到2.0，解决工具栏字体过小的问题
 # python
