@@ -14,7 +14,7 @@
         作者：李子霏
         <br/>
         <br/><br/>
-        2021.06.20-2025.04.11
+        2021.06.20-2026.03.11
     </font>
 </div>
 
@@ -648,7 +648,7 @@ You can also send suggestions for improvement of this document to the list.
 sfadd减法      :`add scale=1,-1 ${SOURCES[1]}`
 sfwindow       : n#=* 指的在第#个道集采多* 长，f#=* 指的是采样间隔，
 sfreverse      : 翻转数轴
-
+sfdisfil       : 显示选择的内容
 ## mada撰写论文
 1. 主文件夹
 - 主文件夹下放置`.tex`文件，SConstruct脚本，处理数据的文件夹以及格式文件`.sty`，`.cls`等。
@@ -1002,8 +1002,10 @@ def seis(input):
         Chapter4:Useritem
     </font>
 </div>
+
 # VScode基本使用方法
 本节将会详细介绍vscode如何配置插件并且同步、创建你自己的本地Latex编译器等等，包含Texlive的基础使用知识
+
 # Linux杂七杂八的东西
 ## cuda安装与路径配置:
 1. .deb安装
@@ -1094,6 +1096,7 @@ export PATH=$PATH:$LD_LIBRARY_PATH:$CUDA_HOME
 `snap list`
 - 删除应用
 `sudo snam remove <name>`
+
 ## Nvidia驱动
 1. 安装
 官网下载对应型号的显卡驱动
@@ -1102,6 +1105,64 @@ export PATH=$PATH:$LD_LIBRARY_PATH:$CUDA_HOME
 `./*.run`
 2. 动态查看进程
 `watch -n 2 -d nvidia-smi`
+
+## Ubuntu 24.04 内核清理与启动白屏问题
+
+**日期：** 2026-03-22  
+**环境：** Ubuntu 24.04 LTS / 内核 6.14.0-37-generic  
+**硬件：** NVIDIA GeForce GTX 1660  
+**目标：** 彻底解决多内核冗余、驱动冲突（Nouveau 抢占）导致的启动白屏问题。
+
+---
+
+### 1. 内核清理（彻底物理“瘦身”）
+
+当系统存在大量 `deinstall` 状态的残留或版本跨度过大（从 6.8 到 6.17）时，必须清理以释放 `/boot` 空间并简化引导项。
+
+#### 1.1 确定当前运行内核
+**注意：** 严禁删除正在运行的内核版本。
+```bash
+uname -r
+# 本次案例输出：6.14.0-37-generic
+```
+#### 1.2 清理卸载卸载（“幽灵”内核）
+```bash
+# 清理那些已经删除但保留了配置文件的内核包，阻止干扰GRUB菜单。
+dpkg --get-selections | grep deinstall | awk '{print $1}' | xargs sudo dpkg --purge
+sudo dpkg --purge --force-all \
+linux-image-6.17.0-19-generic \
+linux-image-6.11.0-29-generic \
+linux-image-6.8.0-52-generic
+# 手动清理 /boot 物理文件
+sudo rm -f /boot/*6.17*
+sudo rm -f /boot/*6.8*
+# 必须同步更新引导菜单
+sudo update-grub
+```
+### 2. 彻底封杀Nouveau（修复启动白屏核心）
+现象：正常启动弹出白色报错界面（哦不！出了问题），只能通过Recovery模式进入。
+根本原因：开源驱动nouveau抢占了显卡控制权，导致原生驱动nvidia初始化失败。
+#### 2.1 写入黑名单配置
+```bash
+sudo bash -c 'cat <<EOF > /etc/modprobe.d/blacklist-nouveau.conf
+blacklist nouveau
+options nouveau modeset=0
+EOF'
+```
+#### 2.2 同步至内核镜像（最关键步骤）
+```bash
+如果不执行此步骤，nouveau会在系统读取黑名单文件之前就预先加载。
+# 强制更新所有内核的启动镜像，确保黑名单被刻入镜像
+sudo update-initramfs -u -k all
+```
+#### 小结
+常用故障诊断清单
+若系统遇到图形界面问题，按Ctrl + Alt + F3进入 TTY 终端执行：
+检查驱动冲突：（ lsmod | grep nouveau正常应无输​​出）。
+查看显卡状态： nvidia-smi。
+查看错误日志： journalctl -b 0 -p err | grep -E "nvidia|gdm|xorg"。
+强制重置显示设置： sudo nvidia-xconfig
+
 ## 进程中断
 `kill -9 -PID`
 ## 服务器后台运行

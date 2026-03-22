@@ -14,7 +14,7 @@
         作者：李子霏
         <br/>
         <br/><br/>
-        2021.06.20-2025.04.11
+        2021.06.20-2026.03.11
     </font>
 </div>
 
@@ -390,7 +390,7 @@ Madagascar的安装是非常标准的Linux软件安装方式，总体步骤均�
     `API=matlab`* 
     `CUDA TOOLKIT PATH= `*
     其中prefix 指定安装路径,API和CUDA设置根据CUDA路径以及matlab安装路径来决定
-    	该步骤有时会报错如下，此时检查config.py文件，如果正常生成并且里面的设置正确，就可直接执行安装了。
+      该步骤有时会报错如下，此时检查config.py文件，如果正常生成并且里面的设置正确，就可直接执行安装了。
 ```bash
 scons: Reading SConscript files ...
 scons: done reading SConscript files.
@@ -528,11 +528,11 @@ Here are a few simple tests and and a brief introduction to Madagascar:
 Typing any Madagascar command in a terminal window without parameters should
 generate a brief documentation on that command. Try one of the following:
 
-	sfin
-	sfattr
-	sfspike
-	sfbandpass
-	sfwiggle
+  sfin
+  sfattr
+  sfspike
+  sfbandpass
+  sfwiggle
 
 If you get an error like "Command not found", you may not have your
 PATH environment variable set correctly, or you may need to
@@ -540,12 +540,12 @@ issue the rehash command.
 
 Now try making a simple Madagascar data file:
 
-	sfspike n1=1000 k1=300 > spike.rsf
+  sfspike n1=1000 k1=300 > spike.rsf
 
 This command generates a one dimensional list of 1000 numbers, all zero except
 for a spike equal to one at position 300. If this generates an error like
 
-	Cannot write to data file /path/spike.rsf@: Bad file descriptor
+  Cannot write to data file /path/spike.rsf@: Bad file descriptor
 
 you may need to create the directory pointed to by your DATAPATH
 environment variable.
@@ -555,32 +555,32 @@ the binary file pointed to by the in parameter in the header.  You
 can look at the header file directly with more, or better, examine
 the file properties with
 
-	sfin spike.rsf
+  sfin spike.rsf
 
 You can learn more about the contents of spike.rsf with
 
-	sfattr < spike.rsf
+  sfattr < spike.rsf
 
 
 The following command applies a bandpass filter to spike.rsf and puts
 the result in filter.rsf:
 
-	sfbandpass fhi=2 phase=y < spike.rsf > filter.rsf
+  sfbandpass fhi=2 phase=y < spike.rsf > filter.rsf
 
 The following command makes a graphics file from filter.rsf:
 
-	sfwiggle clip=0.02 title="Welcome to Madagascar" < filter.rsf > filter.vpl
+  sfwiggle clip=0.02 title="Welcome to Madagascar" < filter.rsf > filter.vpl
 
 If you have an X11 display program running, and your DISPLAY
 environment variable is set correctly, you can display the graphics file with:
 
-	sfpen < filter.vpl
+  sfpen < filter.vpl
 
 You can pipe Madagascar commands together and do the whole thing at once like
 this:
 
-	sfspike n1=1000 k1=300 | sfbandpass fhi=2 phase=y | \
-	sfwiggle clip=0.02 title="Welcome to Madagascar" | sfpen
+  sfspike n1=1000 k1=300 | sfbandpass fhi=2 phase=y | \
+  sfwiggle clip=0.02 title="Welcome to Madagascar" | sfpen
 
 If you have SCons installed, you can use it to automate Madagascar processing.
 Here is a simple SConstruct file to make filter.rsf and filter.vpl :
@@ -607,20 +607,20 @@ End()
 Put the file in an empty directory, give it the name SConstruct,
 cd to that directory, and issue the command:
 
-	scons
+  scons
 
 The graphics file is now stored in the Fig subdirectory.  You can
 view it manually with:
 
-	sfpen Fig/filter.vpl
+  sfpen Fig/filter.vpl
 
 ... or you can use:
 
-	scons view
+  scons view
 
 When an SConstruct file makes more than one graphics file, the  
 
-	scons view 
+  scons view 
 
 command will display all of them in sequence. 
 
@@ -648,7 +648,7 @@ You can also send suggestions for improvement of this document to the list.
 sfadd减法      :`add scale=1,-1 ${SOURCES[1]}`
 sfwindow       : n#=* 指的在第#个道集采多* 长，f#=* 指的是采样间隔，
 sfreverse      : 翻转数轴
-
+sfdisfil       : 显示选择的内容
 ## mada撰写论文
 1. 主文件夹
 - 主文件夹下放置`.tex`文件，SConstruct脚本，处理数据的文件夹以及格式文件`.sty`，`.cls`等。
@@ -1002,8 +1002,10 @@ def seis(input):
         Chapter4:Useritem
     </font>
 </div>
+
 # VScode基本使用方法
 本节将会详细介绍vscode如何配置插件并且同步、创建你自己的本地Latex编译器等等，包含Texlive的基础使用知识
+
 # Linux杂七杂八的东西
 ## cuda安装与路径配置:
 1. .deb安装
@@ -1094,6 +1096,7 @@ export PATH=$PATH:$LD_LIBRARY_PATH:$CUDA_HOME
 `snap list`
 - 删除应用
 `sudo snam remove <name>`
+
 ## Nvidia驱动
 1. 安装
 官网下载对应型号的显卡驱动
@@ -1102,6 +1105,64 @@ export PATH=$PATH:$LD_LIBRARY_PATH:$CUDA_HOME
 `./*.run`
 2. 动态查看进程
 `watch -n 2 -d nvidia-smi`
+
+## Ubuntu 24.04 内核清理与启动白屏问题
+
+**日期：** 2026-03-22  
+**环境：** Ubuntu 24.04 LTS / 内核 6.14.0-37-generic  
+**硬件：** NVIDIA GeForce GTX 1660  
+**目标：** 彻底解决多内核冗余、驱动冲突（Nouveau 抢占）导致的启动白屏问题。
+
+---
+
+### 1. 内核清理（彻底物理“瘦身”）
+
+当系统存在大量 `deinstall` 状态的残留或版本跨度过大（从 6.8 到 6.17）时，必须清理以释放 `/boot` 空间并简化引导项。
+
+#### 1.1 确定当前运行内核
+**注意：** 严禁删除正在运行的内核版本。
+```bash
+uname -r
+# 本次案例输出：6.14.0-37-generic
+```
+#### 1.2 清理卸载卸载（“幽灵”内核）
+```bash
+# 清理那些已经删除但保留了配置文件的内核包，阻止干扰GRUB菜单。
+dpkg --get-selections | grep deinstall | awk '{print $1}' | xargs sudo dpkg --purge
+sudo dpkg --purge --force-all \
+linux-image-6.17.0-19-generic \
+linux-image-6.11.0-29-generic \
+linux-image-6.8.0-52-generic
+# 手动清理 /boot 物理文件
+sudo rm -f /boot/*6.17*
+sudo rm -f /boot/*6.8*
+# 必须同步更新引导菜单
+sudo update-grub
+```
+### 2. 彻底封杀Nouveau（修复启动白屏核心）
+现象：正常启动弹出白色报错界面（哦不！出了问题），只能通过Recovery模式进入。
+根本原因：开源驱动nouveau抢占了显卡控制权，导致原生驱动nvidia初始化失败。
+#### 2.1 写入黑名单配置
+```bash
+sudo bash -c 'cat <<EOF > /etc/modprobe.d/blacklist-nouveau.conf
+blacklist nouveau
+options nouveau modeset=0
+EOF'
+```
+#### 2.2 同步至内核镜像（最关键步骤）
+```bash
+如果不执行此步骤，nouveau会在系统读取黑名单文件之前就预先加载。
+# 强制更新所有内核的启动镜像，确保黑名单被刻入镜像
+sudo update-initramfs -u -k all
+```
+#### 小结
+常用故障诊断清单
+若系统遇到图形界面问题，按Ctrl + Alt + F3进入 TTY 终端执行：
+检查驱动冲突：（ lsmod | grep nouveau正常应无输​​出）。
+查看显卡状态： nvidia-smi。
+查看错误日志： journalctl -b 0 -p err | grep -E "nvidia|gdm|xorg"。
+强制重置显示设置： sudo nvidia-xconfig
+
 ## 进程中断
 `kill -9 -PID`
 ## 服务器后台运行
